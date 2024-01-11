@@ -8,6 +8,7 @@ import Registerform from "./component/form";
 import Task from "./component/task";
 import SignIn from "./component/Auth/SignIn";
 import SignUp from "./component/Auth/SignUp";
+import Password from "./component/Modal/Password";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,6 +18,7 @@ root.render(
       <Route path="/" element={<SignIn />} />
       <Route path="/signUp" element={<SignUp/>}/>
       <Route path="/tasks" element={<Task />} />
+      <Route path="/resetPassword" element={<Password />} />
     </Routes>
   </BrowserRouter>
   // <React.StrictMode>

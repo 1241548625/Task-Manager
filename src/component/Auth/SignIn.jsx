@@ -1,13 +1,15 @@
 import React, { useState} from 'react';
 import {auth} from "../../firebase.js";
-import { signInWithEmailAndPassword } from '@firebase/auth';
+import { signInWithEmailAndPassword,sendPasswordResetEmail } from '@firebase/auth';
 import { Link, useNavigate } from "react-router-dom"; 
+import "./SignIn.css";
+import Password_Modal from "../Modal/Password.js";
 
 const SignIn = () =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
+    const [resetPassword, setResetPassword] = useState(false);
 
     const signIn = (e) => {
         e.preventDefault();
@@ -26,23 +28,31 @@ const SignIn = () =>{
 
 
     return (
-        <div>
-            <form onSubmit={signIn}>
-                <h1>Log In</h1>
-                <input type='email' placeholder='enter your email' value={email} 
+        <div className='signIn'>
+          <div className='signIn-container'>
+          <h1 className='signIn-container-title'>Task Manager</h1>
+          </div>
+            <form onSubmit={signIn} className='signIn-form'>
+                <h1 className='signIn-form__title'>Log In</h1>
+                <div className='signIn-form__log'>
+                <input type='email' placeholder='Enter your email' value={email} 
                 onChange={(e)=> setEmail(e.target.value)}
+                className='signIn-form__input'
                 ></input>
-                <input type='text' placeholder='enter your name' value={name} 
-                onChange={(e)=> setName(e.target.value)}
-                ></input>
+                </div>
+                <div className='signIn-form__log'>
                 <input type='password' 
-                placeholder='enter your password' 
+                placeholder='Enter your password' 
                 value={password}
                 onChange={(e)=> setPassword(e.target.value)}
+                className='signIn-form__input'
                 ></input>
-                <button type='submit'>Log In</button>
+                </div>
+                <button type='submit' className='signIn-btn'>Log In</button>
+                <p>or <Link to="/resetPassword">Forgot Password</Link></p>
+                <p>Don't have an account? <Link to="/signUp">Create an Account</Link></p>
             </form>
-            <p>Don't have an account? <Link to="/signUp">Create an Account</Link></p>
+            
         </div>
     )
 }

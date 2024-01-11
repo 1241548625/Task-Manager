@@ -70,6 +70,7 @@ function Task() {
   useEffect(() => {  
     const listener = onAuthStateChanged(auth, async (user) => {
       init(user);
+      console.log(user);
     });
   
     return () => {
