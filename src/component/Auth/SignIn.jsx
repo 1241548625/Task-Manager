@@ -9,7 +9,8 @@ const SignIn = () =>{
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [resetPassword, setResetPassword] = useState(false);
+    const [WrongPassword, setWrongPassword] = useState(false);
+    const [resetRequire, setResetRequire] = useState(false);
 
     const signIn = (e) => {
         e.preventDefault();
@@ -23,6 +24,14 @@ const SignIn = () =>{
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+          if(errorCode === 'auth/invalid-login-credentials'){
+            setWrongPassword(true);
+          }else if(errorCode === 'auth/too-many-requests'){
+            setResetRequire(true);
+          }
+          
         });
       };
 
@@ -34,9 +43,11 @@ const SignIn = () =>{
           </div>
             <form onSubmit={signIn} className='signIn-form'>
                 <h1 className='signIn-form__title'>Log In</h1>
+                {resetRequire ? <p style={{color:"red"}}>Access to this account has been temporarily disabled due to many failed login attempts. Resetting your password or try again later.</p>: <></>}
+                {WrongPassword ? <p style={{color:"red"}}>Email or Password is invalid, Please try again</p>: <></>}
                 <div className='signIn-form__log'>
                 <input type='email' placeholder='Enter your email' value={email} 
-                onChange={(e)=> setEmail(e.target.value)}
+                onChange={(e)=> {setEmail(e.target.value); setWrongPassword(false);setResetRequire(false)}}
                 className='signIn-form__input'
                 ></input>
                 </div>
@@ -44,7 +55,7 @@ const SignIn = () =>{
                 <input type='password' 
                 placeholder='Enter your password' 
                 value={password}
-                onChange={(e)=> setPassword(e.target.value)}
+                onChange={(e)=> {setPassword(e.target.value); setWrongPassword(false);setResetRequire(false)}}
                 className='signIn-form__input'
                 ></input>
                 </div>

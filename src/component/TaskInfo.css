@@ -1,0 +1,21 @@
+.task-sortBy {
+  text-align: end;
+  /* padding: 10px; */
+  margin: 10px;
+  font-size: 1.3rem;
+}
+
+.task-select {
+  width: 6rem;
+  height: 2rem;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 1000px) {
+  .task-sortBy {
+    font-size: 1rem;
+  }
+  .task-select {
+    width: 5rem;
+  }
+}

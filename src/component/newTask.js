@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { getDatabase, ref, set, push } from "firebase/database";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import "./NewTask.css";
 
 function NewTask({ setShowNewTaskForm, handleModalClose, uid }) {
   const [enterTitle, setEnterTitle] = useState("");
   const [enterDes, setDes] = useState("");
   const [enterDate, setEnterDate] = useState("");
-  const [enterStatus, setStatus] = useState("To-do");
+  const [enterStatus, setStatus] = useState("To-Do");
   const [name, setName] = useState("");
 
   //   useEffect(() => {
@@ -91,7 +92,7 @@ function NewTask({ setShowNewTaskForm, handleModalClose, uid }) {
         <br></br>
         <Form.Group>
           <Form.Select onChange={statusChange}>
-            <option value="To-do">To-do</option>
+            <option value="To-Do">To-Do</option>
             <option value="In-Progress">In-Progress</option>
             <option value="Done">Done</option>
           </Form.Select>
@@ -106,7 +107,9 @@ function NewTask({ setShowNewTaskForm, handleModalClose, uid }) {
           ></Form.Control>
         </Form.Group>
         <br></br>
-        <Button type="submit">Submit</Button>
+        <button type="submit" className="create-submit">
+          Submit
+        </button>
       </Form>
     </div>
   );

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import {auth} from "../firebase.js";
+import { auth } from "../firebase.js";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 
 import {
@@ -16,8 +16,8 @@ import {
 } from "firebase/database";
 import NewTask from "./newTask";
 import TaskInfo from "./TaskInfo";
-import {app} from "../firebase.js";
-
+import { app } from "../firebase.js";
+import "./task.css";
 
 function Task() {
   const user = auth.currentUser;
@@ -29,9 +29,9 @@ function Task() {
   const [editInfo, setEdit] = useState({});
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [sortBy, setSortBy] = useState("");
-  const [uid, setUid] = useState(null)
+  const [uid, setUid] = useState(null);
   const status_weight = {
-    "To-do": 1,
+    "To-Do": 1,
     "In-Progress": 2,
     Done: 3,
   };
@@ -63,24 +63,24 @@ function Task() {
   // }, []);
   const init = (user) => {
     setName(user.displayName);
-    setEmail(user.email)
-    setUid(user.uid)
-  }
+    setEmail(user.email);
+    setUid(user.uid);
+  };
 
-  useEffect(() => {  
+  useEffect(() => {
     const listener = onAuthStateChanged(auth, async (user) => {
       init(user);
       console.log(user);
     });
-  
+
     return () => {
       listener();
     };
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setSortBy(localStorage.getItem("sortBy"));
-  })
+  });
 
   //get data from database
   useEffect(() => {
@@ -109,12 +109,12 @@ function Task() {
   }, [info, sortBy]);
 
   useEffect(() => {
-    //this should be user email, instead of user name 
+    //this should be user email, instead of user name
     if (uid === null) {
-      console.log("null")
+      console.log("null");
       return;
     }
-    console.log("not null")
+    console.log("not null");
     const db = getDatabase(app);
     const starCountRef = ref(db, "user/" + uid);
     onValue(starCountRef, (snapshot) => {
@@ -153,11 +153,13 @@ function Task() {
   const logout = (event) => {
     event.preventDefault();
     // localStorage.removeItem("name");
-    signOut(auth).then(() => {
-      console.log("Sign-out successful.")
-    }).catch((error) => {
-      console.log(error);
-    });
+    signOut(auth)
+      .then(() => {
+        console.log("Sign-out successful.");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     navigate("/");
   };
 
@@ -165,52 +167,70 @@ function Task() {
     setShowNewTaskForm(false);
   };
 
+  //style={{ width: "70%", margin: "auto", textAlign: "center" }}
+
   return (
-    <Container>
+    <div className="task-container">
+      <div className="taskContainer">
+        <div className="task-title">
+          <h1>{name}'s Tasks </h1>
+          <div
+            style={{
+              display: "inline-block",
+              float: "right",
+            }}
+          >
+            <button variant="link" onClick={logout} className="task-btn">
+              Logout
+            </button>
+          </div>
+          <div>
+            <button
+              className="task-btn"
+              variant="link"
+              onClick={() => {
+                setShowNewTaskForm(!showNewTaskForm);
+              }}
+            >
+              Create
+            </button>
 
-  <div style={{ width: "70%", margin: "auto", textAlign: "center" }}>
-    <h1>{name}'s Tasks</h1>
-    <div style={{ display: "inline-block", float: "right" }}>
-      <Button variant="link" onClick={logout} style = {{float:"right"}}>
-        Logout
-      </Button>
+            <Modal
+              show={showNewTaskForm}
+              onHide={handleModalClose}
+              className="modal-container"
+              // style={{ marginTop: "400px" }}
+            >
+              <div className="create-modal">
+                <Modal.Header closeButton>
+                  <Modal.Title>Create New Task</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <NewTask
+                    setShowNewTaskForm={setShowNewTaskForm}
+                    handleModalClose={handleModalClose}
+                    uid={uid}
+                  ></NewTask>
+                </Modal.Body>
+              </div>
+            </Modal>
+          </div>
+        </div>
+        <br></br>
+        {info === null || JSON.stringify(info) === "{}" ? (
+          <div>
+            <p>NO TASK TO SHOW. CREATE ONE.</p>
+          </div>
+        ) : (
+          <TaskInfo
+            info={sortedData}
+            deleteTask={deleteTask}
+            editTask={editTask}
+            setSortBy={setSortBy}
+          ></TaskInfo>
+        )}
+      </div>
     </div>
-    <div style={{ display: "inline-block", float:"left", }}>
-      <Button
-        variant="link"
-        onClick={() => {
-          setShowNewTaskForm(!showNewTaskForm);
-        }}
-      >
-        Create Task
-      </Button>
-      <Modal show={showNewTaskForm} onHide={handleModalClose} >
-        <Modal.Header closeButton>
-          <Modal.Title>Create New Task</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <NewTask
-            setShowNewTaskForm={setShowNewTaskForm}
-            handleModalClose={handleModalClose}
-            uid={uid}
-          ></NewTask>
-        </Modal.Body>
-      </Modal>
-    </div>
-    <br></br>
-    {info === null || JSON.stringify(info) === "{}" ? (
-      <></>
-    ) : (
-      <TaskInfo
-        info={sortedData}
-        deleteTask={deleteTask}
-        editTask={editTask}
-        setSortBy={setSortBy}
-      ></TaskInfo>
-    )}
-  </div>
-</Container>
-
   );
 }
 
